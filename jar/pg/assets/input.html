@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <title>影視</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <meta name="layoutmode" content="standard">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/ui.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/script.js"></script>
+</head>
+
+<body>
+<div class="page">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div id="panel1" role="tabpanel" aria-labelledby="tab1" class="weui-tab__panel">
+                <div class="weui-form">
+                    <div class="weui-form__text-area">
+                        <h2 class="weui-form__title">輸入文字</h2>
+                    </div>
+                    <div class="weui-form__control-area">
+                        <div class="weui-cells__group weui-cells__group_form">
+                            <div class="weui-cells">
+                                <div class="weui-cell weui-cell_active weui-cell_vcode weui-cell_wrap">
+                                    <div class="weui-cell__bd weui-flex">
+                                        <input id="keyword" class="weui-input weui-cell__control weui-cell__control_flex" type="text" value="" placeholder="請輸入文字..." />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: center;margin-top: 16px;">
+                                <button onclick="inputText(); return false;" class="weui-cell__control weui-btn weui-btn_default weui-vcode-btn">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div role="tablist" class="weui-tabbar">
+                <div id="tab1" role="tab" aria-labelledby="t1_title" aria-selected="true" aria-controls="panel1" class="weui-tabbar__item weui-bar__item_on">
+                    <div class="weui-tabbar__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg>
+                    </div>
+                    <p id="t1_title" aria-hidden="true" class="weui-tabbar__label">输入文字</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div role="dialog" aria-hidden="true" aria-modal="true" id="fileInfoDialog" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">本地路徑</strong></div>
+        <div class="weui-dialog__bd" id="fileUrl"></div>
+        <div class="weui-dialog__ft">
+            <a role="button" href="javascript:void(0)" onclick="pushFile(0)" class="weui-dialog__btn weui-dialog__btn_default">關閉</a>
+            <a role="button" href="javascript:void(0)" onclick="pushFile(1)" class="weui-dialog__btn weui-dialog__btn_primary">使用</a>
+            <a role="button" href="javascript:void(0)" onclick="delFile()" class="weui-dialog__btn weui-dialog__btn_primary" id="delFileBtn">刪除</a>
+        </div>
+    </div>
+</div>
+<div role="dialog" aria-hidden="true" aria-modal="true" id="uploadTip" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">確認上傳？</strong></div>
+        <div class="weui-dialog__bd" id="uploadTipContent"></div>
+        <div class="weui-dialog__ft">
+            <a role="button" href="javascript:void(0)" onclick="doUpload(0)" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a role="button" href="javascript:void(0)" onclick="doUpload(1)" class="weui-dialog__btn weui-dialog__btn_primary">確定</a>
+        </div>
+    </div>
+</div>
+<div role="dialog" aria-hidden="true" aria-modal="true" id="newFolder" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">新增資料夾</strong></div>
+        <div class="weui-dialog__bd">
+            <input id="newFolderContent" class="weui-input weui-cell__control weui-cell__control_flex" type="text" value="" placeholder="請輸入資料夾名稱..." />
+        </div>
+        <div class="weui-dialog__ft">
+            <a role="button" href="javascript:void(0)" onclick="doNewFolder(0)" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a role="button" href="javascript:void(0)" onclick="doNewFolder(1)" class="weui-dialog__btn weui-dialog__btn_primary">確定</a>
+        </div>
+    </div>
+</div>
+<div role="dialog" aria-hidden="true" aria-modal="true" id="delFolder" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">刪除資料夾</strong></div>
+        <div class="weui-dialog__bd" id="delFolderContent"></div>
+        <div class="weui-dialog__ft">
+            <a role="button" href="javascript:void(0)" onclick="doDelFolder(0)" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a role="button" href="javascript:void(0)" onclick="doDelFolder(1)" class="weui-dialog__btn weui-dialog__btn_primary">確定</a>
+        </div>
+    </div>
+</div>
+<div role="dialog" aria-hidden="true" aria-modal="true" id="delFile" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">刪除檔案</strong></div>
+        <div class="weui-dialog__bd" id="delFileContent"></div>
+        <div class="weui-dialog__ft">
+            <a role="button" href="javascript:void(0)" onclick="doDelFile(0)" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a role="button" href="javascript:void(0)" onclick="doDelFile(1)" class="weui-dialog__btn weui-dialog__btn_primary">確定</a>
+        </div>
+    </div>
+</div>
+<div role="alert" id="warnToast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+        <p class="weui-toast__content" id="warnToastContent"></p>
+    </div>
+</div>
+<div role="alert" id="loadingToast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <span class="weui-primary-loading weui-icon_toast"><span class="weui-primary-loading__dot"></span></span>
+        <p class="weui-toast__content">載入中</p>
+    </div>
+</div>
+<script>
+    function inputText() {
+        doProxy('input', { text: $('#keyword').val() });
+    }
+    function doProxy(action, kv) {
+        kv['do'] = action;
+        $.post('/proxy', kv, function (data) {
+            console.log(data);
+        });
+        return false;
+    }
+</script>
+</body>
+
+</html>
